@@ -2,6 +2,7 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback } from 'react-nati
 import { Link } from 'expo-router'
 import { Colors } from '../../constants/Colors'
 import { useState } from 'react'
+import { useUser } from '../../hooks/useUser'
 
 import ThemedView from '../../components/ThemedView'
 import ThemedText from '../../components/ThemedText'
@@ -13,8 +14,14 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const { login } = useUser()
+
   const handleSubmit = async () => {
-    console.log('login form submitted', email, password)
+    try {
+      await login(email, password)
+    } catch (error) {
+
+    }
   }
 
   return (

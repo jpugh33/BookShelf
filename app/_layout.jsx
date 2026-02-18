@@ -2,13 +2,27 @@ import { Stack } from "expo-router"
 import { Colors } from "../constants/Colors"
 import { useColorScheme } from "react-native"
 import { StatusBar } from "expo-status-bar"
+import { UserProvider } from "../contexts/UserContext"
+
+import { Slot } from "expo-router";
+import { useEffect } from "react";
 
 export default function RootLayout() {
+  useEffect(() => {
+    fetch("https://fra.cloud.appwrite.io/v1/health")
+      .then(() => {
+        console.log("Connected to Appwrite");
+      })
+      .catch((err) => {
+        console.log("Failed to connect to Appwrite:", err);
+      });
+  }, []);
+
   const colorScheme = useColorScheme()
   const theme = Colors[colorScheme] ?? Colors.light
 
   return (
-    <>
+    <UserProvider>
       <StatusBar value="auto" />
       <Stack screenOptions={{
         headerStyle: { backgroundColor: theme.navBackground },
@@ -20,6 +34,8 @@ export default function RootLayout() {
         {/* Individual Screens */}
         <Stack.Screen name="index" options={{ title: "Home" }} />
       </Stack>
-    </>
+    </UserProvider>
   )
+
+    return <Slot />;
 }

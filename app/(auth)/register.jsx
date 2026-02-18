@@ -2,6 +2,7 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback } from 'react-nati
 import { Link } from 'expo-router'
 import { Colors } from '../../constants/Colors'
 import { useState } from 'react'
+import { useUser } from '../../hooks/useUser'
 
 import ThemedView from '../../components/ThemedView'
 import ThemedText from '../../components/ThemedText'
@@ -13,8 +14,14 @@ const Register = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const { register } = useUser()
+
   const handleSubmit = async () => {
-    console.log('register form submitted', email, password)
+    try {
+      await register(email, password)
+    } catch (error) {
+
+    }
   }
 
   return (
@@ -41,7 +48,6 @@ const Register = () => {
           value={password}
           secureTextEntry
         />
-
 
         <ThemedButton onPress={handleSubmit}>
           <Text style={{ color: '#f2f2f2' }}>Register</Text>
