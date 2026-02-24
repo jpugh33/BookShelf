@@ -6,6 +6,7 @@ import { UserProvider } from "../contexts/UserContext"
 
 import { Slot } from "expo-router";
 import { useEffect } from "react";
+import { BooksProvider } from "../contexts/BooksContext"
 
 export default function RootLayout() {
   useEffect(() => {
@@ -23,17 +24,23 @@ export default function RootLayout() {
 
   return (
     <UserProvider>
-      <StatusBar value="auto" />
-      <Stack screenOptions={{
-        headerStyle: { backgroundColor: theme.navBackground },
-        headerTintColor: theme.title,
-      }}>
-        {/* Individual Screens */}
-        <Stack.Screen name="index" options={{ title: "Home" }} />
-        {/* Groups */}
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
-      </Stack>
+      <BooksProvider>
+        <StatusBar value="auto" />
+
+        <Stack screenOptions={{
+          headerStyle: { backgroundColor: theme.navBackground },
+          headerTintColor: theme.title,
+        }}>
+
+          {/* Individual Screens */}
+          <Stack.Screen name="index" options={{ title: "Home" }} />
+
+          {/* Groups */}
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
+
+        </Stack>
+      </BooksProvider>
     </UserProvider>
   )
 
