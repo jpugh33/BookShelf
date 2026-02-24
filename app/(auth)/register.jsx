@@ -4,11 +4,12 @@ import { Colors } from '../../constants/Colors'
 import { useState } from 'react'
 import { useUser } from '../../hooks/useUser'
 
+// themed components
 import ThemedView from '../../components/ThemedView'
 import ThemedText from '../../components/ThemedText'
-import Spacer from '../../components/Spacer'
 import ThemedButton from '../../components/ThemedButton'
 import ThemedTextInput from '../../components/ThemedTextInput'
+import Spacer from '../../components/Spacer'
 
 const Register = () => {
   const [email, setEmail] = useState('')

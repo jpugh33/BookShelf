@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native'
 import { Link } from 'expo-router'
 
+// themed components
 import ThemedView from "../components/ThemedView"
 import ThemedText from "../components/ThemedText"
 import ThemedLogo from "../components/ThemedLogo"
@@ -40,14 +41,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   img: {
     marginVertical: 20
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 18
   },
   link: {
     marginVertical: 10,

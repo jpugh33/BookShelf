@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native'
 
+// themed components
 import Spacer from "../../components/Spacer"
 import ThemedText from "../../components/ThemedText"
 import ThemedView from "../../components/ThemedView"
@@ -22,12 +23,11 @@ export default Books
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
-    alignItems: "stretch",
+    alignItems: "stretch"
   },
   heading: {
     fontWeight: "bold",
     fontSize: 18,
-    textAlign: "center",
-  },
+    textAlign: "center"
+  }
 })

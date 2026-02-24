@@ -1,10 +1,8 @@
-import { Stack } from "expo-router"
+import { Stack, Slot } from "expo-router"
 import { Colors } from "../constants/Colors"
 import { useColorScheme } from "react-native"
 import { StatusBar } from "expo-status-bar"
 import { UserProvider } from "../contexts/UserContext"
-
-import { Slot } from "expo-router";
 import { useEffect } from "react";
 import { BooksProvider } from "../contexts/BooksContext"
 
