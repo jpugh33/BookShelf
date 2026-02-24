@@ -66,13 +66,6 @@ const Login = () => {
           </ThemedText>
         </Link>
 
-        <Spacer height={100} />
-        <Link href="../home" replace>
-          <ThemedText style={{ textAlign: "center" }}>
-            Home page
-          </ThemedText>
-        </Link>
-
       </ThemedView>
     </TouchableWithoutFeedback>
   )
