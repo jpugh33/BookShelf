@@ -12,6 +12,24 @@ export function BooksProvider({ children }) {
     const [books, setBooks] = useState([])
     const { user } = useUser()
 
+    function optimistic(setter, { applyOptimistic, applySuccess, applyFailure, action }) {
+        // 1. Apply optimistic UI
+        setter(prev => applyOptimistic(prev))
+
+        return action()
+        .then(result => {
+            // 2. Apply success state
+            setter(prev => applySuccess(prev, result))
+            return result
+        }).catch(err => {
+            console.error(err.message)
+            // 3. Roll back UI
+            setter(prev => applyFailure(prev))
+            throw err
+        })
+    }
+
+
     async function fetchBooks() {
         try {
             const response = await databases.listDocuments(
@@ -44,43 +62,54 @@ export function BooksProvider({ children }) {
     }
 
     async function createBook(data) {
-        const temp = { ...data, $id: `temp-${Date.now()}`, userid: user.$id }
-        setBooks(prev => [...prev, temp])
+        const tempId = `temp-${Date.now()}`
+        const tempBook = { ...data, $id: tempId, userid: user.$id }
 
-        try {
-            const created = await databases.createDocument(
+        return optimistic(setBooks, {
+            applyOptimistic: prev => [...prev, tempBook],
+
+            action: () =>
+            databases.createDocument(
                 DATABASE_ID,
                 COLLECTION_ID,
                 ID.unique(),
                 { ...data, userid: user.$id },
                 [
-                    Permission.read(Role.user(user.$id)),
-                    Permission.update(Role.user(user.$id)),
-                    Permission.delete(Role.user(user.$id))
+                Permission.read(Role.user(user.$id)),
+                Permission.update(Role.user(user.$id)),
+                Permission.delete(Role.user(user.$id))
                 ]
-            )
+            ),
 
-            setBooks(prev =>
-                prev.map(b => (b.$id === temp.$id ? created : b))
-            )
+            applySuccess: (prev, created) =>
+            prev.map(b => (b.$id === tempId ? created : b)),
 
-            return created
-        } catch (err) {
-            console.error(err.message)
-
-            setBooks(prev =>
-                prev.filter(b => b.$id !== temp.$id)
-            )
-        }
+            applyFailure: prev =>
+            prev.filter(b => b.$id !== tempId)
+        })
     }
 
     async function deleteBook(id) {
-        try {
+        const deletedBook = books.find(b => b.$id === id)
 
-        } catch (error) {
-            console.error(error.message)
-        }
+        return optimistic(setBooks, {
+            applyOptimistic: prev =>
+            prev.filter(b => b.$id !== id),
+
+            action: () =>
+            databases.deleteDocument(
+                DATABASE_ID,
+                COLLECTION_ID,
+                id
+            ),
+
+            applySuccess: prev => prev, // nothing to replace
+
+            applyFailure: prev =>
+            [...prev, deletedBook] // restore removed book
+        })
     }
+
 
     useEffect(() => {
         if (user) {
