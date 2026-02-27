@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react"
-import { databases } from "../lib/appwrite"
+import { databases, client } from "../lib/appwrite"
 import { ID, Permission, Query, Role } from "react-native-appwrite"
 import { useUser } from "../hooks/useUser"
 
@@ -38,20 +38,33 @@ export function BooksProvider({ children }) {
     }
 
     async function createBook(data) {
+        const temp = { ...data, $id: `temp-${Date.now()}`, userid: user.$id }
+        setBooks(prev => [...prev, temp])
+
         try {
-            await databases.createDocument(
+            const created = await databases.createDocument(
                 DATABASE_ID,
                 COLLECTION_ID,
                 ID.unique(),
-                {...data, userid: user.$id},
+                { ...data, userid: user.$id },
                 [
                     Permission.read(Role.user(user.$id)),
                     Permission.update(Role.user(user.$id)),
                     Permission.delete(Role.user(user.$id))
                 ]
             )
-        } catch (error) {
-            console.error(error.message)
+
+            setBooks(prev =>
+                prev.map(b => (b.$id === temp.$id ? created : b))
+            )
+
+            return created
+        } catch (err) {
+            console.error(err.message)
+
+            setBooks(prev =>
+                prev.filter(b => b.$id !== temp.$id)
+            )
         }
     }
 
